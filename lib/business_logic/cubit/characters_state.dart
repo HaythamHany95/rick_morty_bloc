@@ -1,6 +1,3 @@
-part of 'characters_cubit.dart';
+abstract class CharactersState {}
 
-@immutable
-sealed class CharactersState {}
-
-final class CharactersInitial extends CharactersState {}
+class CharactersInitial extends CharactersState {}

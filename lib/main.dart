@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:rick_morty_bloc/presentation/screens/character_details_screen.dart';
+import 'package:rick_morty_bloc/presentation/screens/characters_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const RickAndMortyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RickAndMortyApp extends StatelessWidget {
+  const RickAndMortyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: CharactersScreen.routeName,
+      routes: {
+        CharactersScreen.routeName: (_) => const CharactersScreen(),
+        CharacterDetailsScreen.routeName: (_) => const CharacterDetailsScreen(),
+      },
+    );
   }
 }
