@@ -1,3 +1,11 @@
-abstract class CharactersState {}
+import 'package:rick_morty_bloc/data/models/characters_response.dart';
 
-class CharactersInitial extends CharactersState {}
+abstract class CharactersStates {}
+
+class CharactersInitial extends CharactersStates {}
+
+class CharactersSuccessState extends CharactersStates {
+  /// holding data
+  List<Character?> characters;
+  CharactersSuccessState({required this.characters});
+}
