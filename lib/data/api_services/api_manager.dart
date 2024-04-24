@@ -1,19 +1,30 @@
-// ignore_for_file: use_rethrow_when_possible
+// ignore_for_file: use_rethrow_when_possible, avoid_print
 
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:rick_morty_bloc/constants/api_constants.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
 
 class ApiManager {
-  Future<CharactersResponse?> getCharacters() async {
-    Uri url = Uri.https(ApiConstant.baseUrl, ApiConstant.charactersEndPoint);
+  late Dio dio;
+
+  ApiManager() {
+    BaseOptions options = BaseOptions(
+      baseUrl: ApiConstant.baseUrl,
+      connectTimeout: const Duration(seconds: 20),
+      receiveTimeout: const Duration(seconds: 20),
+    );
+
+    dio = Dio(options);
+  }
+
+  Future<CharactersResponse?> getAllCharacters() async {
     try {
-      var response = await http.get(url);
-      var jsonData = jsonDecode(response.body);
-      return CharactersResponse.fromJson(jsonData);
+      Response response = await dio.get(ApiConstant.charactersEndPoint);
+      var charactersResponse = CharactersResponse.fromJson(response.data);
+      return charactersResponse;
     } catch (error) {
-      throw error;
+      print(error.toString());
+      return null;
     }
   }
 }

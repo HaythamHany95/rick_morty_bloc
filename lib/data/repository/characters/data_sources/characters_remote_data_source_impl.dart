@@ -10,7 +10,7 @@ class CharactersRemoteDataSourceImpl
 
   @override
   Future<CharactersResponse?> getAllCharacters() async {
-    var response = await apiManager.getCharacters();
+    var response = await apiManager.getAllCharacters();
     return response;
   }
 }
