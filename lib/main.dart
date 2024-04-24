@@ -15,7 +15,7 @@ class RickAndMortyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: CharactersScreen.routeName,
       routes: {
-        CharactersScreen.routeName: (_) => const CharactersScreen(),
+        CharactersScreen.routeName: (_) => CharactersScreen(),
         CharacterDetailsScreen.routeName: (_) => const CharacterDetailsScreen(),
       },
     );
