@@ -98,8 +98,9 @@ class _CharactersScreenState extends State<CharactersScreen> {
                             maxCrossAxisExtent:
                                 MediaQuery.of(context).size.width * 0.5,
                             mainAxisExtent:
-                                MediaQuery.of(context).size.width * 0.5,
-                            crossAxisSpacing: 10),
+                                MediaQuery.of(context).size.width * 0.6,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10),
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         // padding: EdgeInsets.zero,
@@ -111,31 +112,42 @@ class _CharactersScreenState extends State<CharactersScreen> {
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                   CharacterDetailsScreen.routeName,
-                                  arguments: state.characters[i]);
+                                  arguments: cubit.searchController.text.isEmpty
+                                      ? state.characters[i]
+                                      : cubit.searchedCharacters[i]);
                             },
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: GridTile(
-                                  header: GridTileBar(
-                                    backgroundColor:
-                                        MyColor.grey.withOpacity(0.7),
-                                    title: Text(
-                                      cubit.searchController.text.isEmpty
-                                          ? cubit.characters[i].name ?? ""
-                                          : cubit.searchedCharacters[i].name ??
-                                              "",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 17),
+                            child: Hero(
+                              tag: state.characters[i]?.id ?? 0,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: GridTile(
+                                    footer: GridTileBar(
+                                      backgroundColor:
+                                          MyColor.grey.withOpacity(0.7),
+                                      title: Text(
+                                        cubit.searchController.text.isEmpty
+                                            ? cubit.characters[i].name ?? ""
+                                            : cubit.searchedCharacters[i]
+                                                    .name ??
+                                                "",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                            color: Colors.white),
+                                      ),
                                     ),
-                                  ),
-                                  child: FadeInImage.assetNetwork(
-                                      placeholder: 'assets/images/loading.gif',
-                                      image: cubit.searchController.text.isEmpty
-                                          ? cubit.characters[i].image ?? ""
-                                          : cubit.searchedCharacters[i].image ??
-                                              ""),
-                                )),
+                                    child: FadeInImage.assetNetwork(
+                                        fit: BoxFit.cover,
+                                        placeholder:
+                                            'assets/images/loading.gif',
+                                        image: cubit
+                                                .searchController.text.isEmpty
+                                            ? cubit.characters[i].image ?? ""
+                                            : cubit.searchedCharacters[i]
+                                                    .image ??
+                                                ""),
+                                  )),
+                            ),
                           );
                         });
                   }
