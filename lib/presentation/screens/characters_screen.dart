@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_morty_bloc/business_logic/cubit/characters_cubit.dart';
 import 'package:rick_morty_bloc/business_logic/cubit/characters_state.dart';
+import 'package:rick_morty_bloc/constants/app_routers_constants.dart';
 import 'package:rick_morty_bloc/constants/my_color.dart';
 import 'package:rick_morty_bloc/dep_injection.dart';
-import 'package:rick_morty_bloc/presentation/screens/character_details_screen.dart';
 import 'package:rick_morty_bloc/presentation/widgets/search_field.dart';
 
 class CharactersScreen extends StatefulWidget {
-  static const String routeName = 'charaters_screen';
-
   const CharactersScreen({super.key});
 
   @override
@@ -111,7 +109,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
                           return InkWell(
                             onTap: () {
                               Navigator.of(context).pushNamed(
-                                  CharacterDetailsScreen.routeName,
+                                  Routes.characterDetailsScreen,
                                   arguments: cubit.searchController.text.isEmpty
                                       ? state.characters[i]
                                       : cubit.searchedCharacters[i]);

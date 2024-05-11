@@ -1,13 +1,11 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:rick_morty_bloc/constants/my_color.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
 
 class CharacterDetailsScreen extends StatefulWidget {
-  static const String routeName = 'character_details_screen';
+  final Character character;
 
-  const CharacterDetailsScreen({super.key});
+  const CharacterDetailsScreen({required this.character, super.key});
 
   @override
   State<CharacterDetailsScreen> createState() => _CharacterDetailsScreenState();
@@ -69,12 +67,10 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var characterArgs = ModalRoute.of(context)?.settings.arguments as Character;
-
     return Scaffold(
       backgroundColor: MyColor.grey,
       body: CustomScrollView(
-        slivers: [buildSliverAppBar(characterArgs)],
+        slivers: [buildSliverAppBar(widget.character)],
       ),
     );
   }
