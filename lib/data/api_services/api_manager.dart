@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:rick_morty_bloc/constants/api_constants.dart';
+import 'package:rick_morty_bloc/core/api_constants.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
 
 class ApiManager {

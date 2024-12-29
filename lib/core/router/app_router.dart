@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rick_morty_bloc/logic/cubit/characters_cubit.dart';
-import 'package:rick_morty_bloc/constants/app_routers_constants.dart';
+import 'package:rick_morty_bloc/core/router/routes.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
 import 'package:rick_morty_bloc/dep_injection.dart';
+import 'package:rick_morty_bloc/logic/cubit/characters_cubit.dart';
 import 'package:rick_morty_bloc/presentation/screens/character_details_screen.dart';
 import 'package:rick_morty_bloc/presentation/screens/characters_screen.dart';
 

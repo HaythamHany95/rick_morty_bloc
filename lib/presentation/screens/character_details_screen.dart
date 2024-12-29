@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rick_morty_bloc/constants/my_color.dart';
+import 'package:rick_morty_bloc/core/my_color.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
 
 class CharacterDetailsScreen extends StatefulWidget {
