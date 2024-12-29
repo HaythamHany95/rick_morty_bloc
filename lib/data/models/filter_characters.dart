@@ -1,20 +1,20 @@
-class FilterState {
+class FilterCharacters {
   final String? status;
   final String? species;
   final String searchText;
 
-  FilterState({
+  FilterCharacters({
     this.status,
     this.species,
     this.searchText = '',
   });
 
-  FilterState copyWith({
+  FilterCharacters copyWith({
     String? status,
     String? species,
     String? searchText,
   }) {
-    return FilterState(
+    return FilterCharacters(
       status: status ?? this.status,
       species: species ?? this.species,
       searchText: searchText ?? this.searchText,
