@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:rick_morty_bloc/core/api_constants.dart';
+import 'package:rick_morty_bloc/data/api_services/api_endpoints.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
 
 class ApiManager {
@@ -7,7 +7,7 @@ class ApiManager {
 
   ApiManager() {
     BaseOptions options = BaseOptions(
-      baseUrl: ApiConstant.baseUrl,
+      baseUrl: EndPoints.baseUrl,
       connectTimeout: const Duration(seconds: 20),
       receiveTimeout: const Duration(seconds: 20),
     );
@@ -18,7 +18,7 @@ class ApiManager {
   Future<CharactersResponse?> getAllCharacters({int page = 1}) async {
     try {
       Response response = await dio.get(
-        '${ApiConstant.charactersEndPoint}?page=$page',
+        '${EndPoints.getCharacters}?page=$page',
       );
       var charactersResponse = CharactersResponse.fromJson(response.data);
       return charactersResponse;
