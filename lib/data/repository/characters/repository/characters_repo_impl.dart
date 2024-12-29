@@ -1,14 +1,14 @@
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
-import 'package:rick_morty_bloc/data/repository/characters/data_sources/characters_remote_data_source_delegate.dart';
-import 'package:rick_morty_bloc/data/repository/characters/repository/characters_repo_delegate.dart';
+import 'package:rick_morty_bloc/data/repository/characters/data_sources/characters_remote_data_source_contract.dart';
+import 'package:rick_morty_bloc/data/repository/characters/repository/characters_repo_contract.dart';
 
-class CharactersRepositoryImpl implements CharactersRepositoryDelegate {
-  CharactersRemoteDataSourceDelegate remoteDelegate;
+class CharactersRepositoryImpl implements CharactersRepositoryContract {
+  CharactersRemoteDataSourceContract remoteContract;
 
-  CharactersRepositoryImpl({required this.remoteDelegate});
+  CharactersRepositoryImpl({required this.remoteContract});
 
   @override
-  Future<CharactersResponse?> getAllCharacters() {
-    return remoteDelegate.getAllCharacters();
+  Future<CharactersResponse?> getAllCharacters({int page = 1}) {
+    return remoteContract.getAllCharacters(page: page);
   }
 }

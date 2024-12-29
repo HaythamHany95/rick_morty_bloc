@@ -1,5 +1,3 @@
-// ignore_for_file: use_rethrow_when_possible, avoid_print
-
 import 'package:dio/dio.dart';
 import 'package:rick_morty_bloc/constants/api_constants.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
@@ -17,9 +15,11 @@ class ApiManager {
     dio = Dio(options);
   }
 
-  Future<CharactersResponse?> getAllCharacters() async {
+  Future<CharactersResponse?> getAllCharacters({int page = 1}) async {
     try {
-      Response response = await dio.get(ApiConstant.charactersEndPoint);
+      Response response = await dio.get(
+        '${ApiConstant.charactersEndPoint}?page=$page',
+      );
       var charactersResponse = CharactersResponse.fromJson(response.data);
       return charactersResponse;
     } catch (error) {

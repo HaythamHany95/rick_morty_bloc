@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rick_morty_bloc/business_logic/cubit/characters_cubit.dart';
+import 'package:rick_morty_bloc/logic/cubit/characters_cubit.dart';
 import 'package:rick_morty_bloc/constants/app_routers_constants.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
 import 'package:rick_morty_bloc/dep_injection.dart';
@@ -12,7 +12,7 @@ class AppRouter {
 
   AppRouter() {
     _charactersCubit =
-        CharactersCubit(repoDelegate: injectCharactersRepositoryDelegate());
+        CharactersCubit(repoContract: injectCharactersRepositoryDelegate());
   }
 
   Route? onGenerateRoute(RouteSettings routeSettings) {

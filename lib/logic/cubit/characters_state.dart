@@ -5,8 +5,8 @@ abstract class CharactersStates {}
 class CharactersInitial extends CharactersStates {}
 
 class CharactersSuccessState extends CharactersStates {
-  /// holding data
   List<Character?> characters;
+
   CharactersSuccessState({required this.characters});
 }
 

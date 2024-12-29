@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rick_morty_bloc/business_logic/cubit/characters_cubit.dart';
-import 'package:rick_morty_bloc/business_logic/cubit/characters_state.dart';
+
 import 'package:rick_morty_bloc/constants/app_routers_constants.dart';
 import 'package:rick_morty_bloc/constants/my_color.dart';
 import 'package:rick_morty_bloc/dep_injection.dart';
+import 'package:rick_morty_bloc/logic/cubit/characters_cubit.dart';
+import 'package:rick_morty_bloc/logic/cubit/characters_state.dart';
 import 'package:rick_morty_bloc/presentation/widgets/search_field.dart';
 
 class CharactersScreen extends StatefulWidget {
@@ -15,14 +16,29 @@ class CharactersScreen extends StatefulWidget {
 }
 
 class _CharactersScreenState extends State<CharactersScreen> {
+  late ScrollController _scrollController;
   var cubit =
-      CharactersCubit(repoDelegate: injectCharactersRepositoryDelegate());
+      CharactersCubit(repoContract: injectCharactersRepositoryDelegate());
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   cubit.getAllCharacters();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      cubit.getAllCharacters();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +68,6 @@ class _CharactersScreenState extends State<CharactersScreen> {
                         onPressed: () {
                           cubit.searchController.clear();
                           cubit.emitSearchState();
-
-                          // Navigator.pop(context);
                         },
                         icon: const Icon(Icons.clear),
                       ),
@@ -85,13 +99,15 @@ class _CharactersScreenState extends State<CharactersScreen> {
               child: BlocBuilder<CharactersCubit, CharactersStates>(
                 bloc: cubit..getAllCharacters(),
                 builder: (context, state) {
-                  if (state is CharactersInitial) {
+                  if (state is CharactersInitial && cubit.characters.isEmpty) {
                     return const Center(
                       child: CircularProgressIndicator(color: MyColor.yellow),
                     );
                   }
-                  if (state is CharactersSuccessState) {
+                  if (state is CharactersSuccessState ||
+                      state is CharacterSearchState) {
                     return GridView.builder(
+                        controller: _scrollController,
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent:
                                 MediaQuery.of(context).size.width * 0.5,
@@ -100,22 +116,35 @@ class _CharactersScreenState extends State<CharactersScreen> {
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 10),
                         shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        // padding: EdgeInsets.zero,
-                        itemCount: cubit.searchController.text.isEmpty
-                            ? state.characters.length
-                            : cubit.searchedCharacters.length,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: (cubit.searchController.text.isEmpty
+                                ? cubit.characters.length
+                                : cubit.searchedCharacters.length) +
+                            (cubit.isLoading ? 1 : 0),
                         itemBuilder: (context, i) {
+                          if (i >=
+                              (cubit.searchController.text.isEmpty
+                                  ? cubit.characters.length
+                                  : cubit.searchedCharacters.length)) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: MyColor.yellow,
+                              ),
+                            );
+                          }
+
+                          final character = cubit.searchController.text.isEmpty
+                              ? cubit.characters[i]
+                              : cubit.searchedCharacters[i];
+
                           return InkWell(
                             onTap: () {
                               Navigator.of(context).pushNamed(
                                   Routes.characterDetailsScreen,
-                                  arguments: cubit.searchController.text.isEmpty
-                                      ? state.characters[i]
-                                      : cubit.searchedCharacters[i]);
+                                  arguments: character);
                             },
                             child: Hero(
-                              tag: state.characters[i]?.id ?? 0,
+                              tag: character.id ?? 0,
                               child: ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
                                   child: GridTile(
@@ -123,11 +152,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
                                       backgroundColor:
                                           MyColor.grey.withOpacity(0.7),
                                       title: Text(
-                                        cubit.searchController.text.isEmpty
-                                            ? cubit.characters[i].name ?? ""
-                                            : cubit.searchedCharacters[i]
-                                                    .name ??
-                                                "",
+                                        character.name ?? "",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 18,
@@ -138,12 +163,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
                                         fit: BoxFit.cover,
                                         placeholder:
                                             'assets/images/loading.gif',
-                                        image: cubit
-                                                .searchController.text.isEmpty
-                                            ? cubit.characters[i].image ?? ""
-                                            : cubit.searchedCharacters[i]
-                                                    .image ??
-                                                ""),
+                                        image: character.image ?? ""),
                                   )),
                             ),
                           );
