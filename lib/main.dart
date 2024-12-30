@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:rick_morty_bloc/presentation/screens/character_details_screen.dart';
-import 'package:rick_morty_bloc/presentation/screens/characters_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rick_morty_bloc/core/router/app_router.dart';
+import 'package:rick_morty_bloc/data/models/character.dart';
 
-void main() {
-  runApp(const RickAndMortyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(CharacterAdapter());
+  await Hive.openBox<Character>('favorites');
+  runApp(RickAndMortyApp(appRoute: AppRouter()));
 }
 
 class RickAndMortyApp extends StatelessWidget {
-  const RickAndMortyApp({super.key});
+  final AppRouter appRoute;
+
+  const RickAndMortyApp({super.key, required this.appRoute});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: CharactersScreen.routeName,
-      routes: {
-        CharactersScreen.routeName: (_) => CharactersScreen(),
-        CharacterDetailsScreen.routeName: (_) => const CharacterDetailsScreen(),
-      },
+      onGenerateRoute: appRoute.onGenerateRoute,
     );
   }
 }

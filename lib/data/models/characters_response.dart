@@ -21,20 +21,6 @@ class CharactersResponse {
               .toList();
     }
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (error != null) {
-      data['error'] = error;
-    }
-    if (info != null) {
-      data["info"] = info?.toJson();
-    }
-    if (results != null) {
-      data["results"] = results?.map((e) => e.toJson()).toList();
-    }
-    return data;
-  }
 }
 
 class Character {
@@ -105,29 +91,6 @@ class Character {
       created = json["created"];
     }
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data["id"] = id;
-    data["name"] = name;
-    data["status"] = status;
-    data["species"] = species;
-    data["type"] = type;
-    data["gender"] = gender;
-    if (origin != null) {
-      data["origin"] = origin?.toJson();
-    }
-    if (location != null) {
-      data["location"] = location?.toJson();
-    }
-    data["image"] = image;
-    if (episode != null) {
-      data["episode"] = episode;
-    }
-    data["url"] = url;
-    data["created"] = created;
-    return data;
-  }
 }
 
 class Location {
@@ -144,13 +107,6 @@ class Location {
       url = json["url"];
     }
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["name"] = name;
-    _data["url"] = url;
-    return _data;
-  }
 }
 
 class Origin {
@@ -166,13 +122,6 @@ class Origin {
     if (json["url"] is String) {
       url = json["url"];
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["name"] = name;
-    _data["url"] = url;
-    return _data;
   }
 }
 
@@ -195,14 +144,5 @@ class Info {
       next = json["next"];
     }
     prev = json["prev"];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["count"] = count;
-    _data["pages"] = pages;
-    _data["next"] = next;
-    _data["prev"] = prev;
-    return _data;
   }
 }

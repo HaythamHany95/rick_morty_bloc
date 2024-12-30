@@ -1,19 +1,38 @@
-// ignore_for_file: use_rethrow_when_possible
-
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:rick_morty_bloc/constants/api_constants.dart';
+import 'package:dio/dio.dart';
+import 'package:either_dart/either.dart';
+import 'package:rick_morty_bloc/data/api_services/api_endpoints.dart';
+import 'package:rick_morty_bloc/data/api_services/errors.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class ApiManager {
-  Future<CharactersResponse?> getCharacters() async {
-    Uri url = Uri.https(ApiConstant.baseUrl, ApiConstant.charactersEndPoint);
+  late Dio dio;
+
+  ApiManager() {
+    BaseOptions options = BaseOptions(
+      baseUrl: EndPoints.baseUrl,
+      connectTimeout: const Duration(seconds: 20),
+      receiveTimeout: const Duration(seconds: 20),
+    );
+
+    dio = Dio(options);
+  }
+
+  Future<Either<Errors, CharactersResponse>> getAllCharacters(
+      {int page = 1}) async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      return Left(NetworkError(errorMessage: 'No internet connection'));
+    }
+
     try {
-      var response = await http.get(url);
-      var jsonData = jsonDecode(response.body);
-      return CharactersResponse.fromJson(jsonData);
+      Response response = await dio.get(
+        '${EndPoints.getCharacters}?page=$page',
+      );
+      var charactersResponse = CharactersResponse.fromJson(response.data);
+      return Right(charactersResponse);
     } catch (error) {
-      throw error;
+      return Left(ServerError(errorMessage: error.toString()));
     }
   }
 }
