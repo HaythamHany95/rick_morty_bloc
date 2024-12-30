@@ -31,11 +31,11 @@ lib/
 
 
 Dependencies:
-connectivity_plus: ^4.0.1
-cupertino_icons: ^1.0.6
-hive: ^2.2.3
-hive_flutter: ^1.1.0
-dio: ^5.4.3+1
-either_dart: ^1.0.0
-Rick and Morty API
+connectivity_plus
+cupertino_icons
+hive
+hive_flutter
+dio
+either_dart
+Rick and Morty Api
 
