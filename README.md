@@ -1,16 +1,41 @@
-# rick_morty_bloc
+Rick and Morty Characters Explorer
+This project is a Flutter-based application designed to explore characters from the Rick and Morty API.
 
-A new Flutter project.
+Features
+Data Retrieval & Display: Fetches and displays character details from the Rick and Morty API.
+Search & Filtering: Enables search functionality and filters characters by status and species.
+Pagination: Implements infinite scrolling for smooth data loading.
+Favorites Management: Allows users to save favorite characters using Hive for local storage.
+Character Detail Screen: Displays detailed information, including episodes.
+Error Handling: Provides user-friendly error messages and loading indicators.
+State Management: Built using Bloc for predictable state handling.
+Clean Architecture: Ensures modularity and maintainability.
+Project Structure
+The project follows a feature-first structure with Clean Architecture principles:
 
-## Getting Started
+lib/  
+├── core/  
+├── data/  
+│   ├── api_services/  
+│   ├── models/  
+│   └── repository/  
+├── logic/  
+│   └── cubit/  
+│       ├── characters_cubit.dart  
+│       └── characters_state.dart  
+├── presentation/  
+│   ├── screens/  
+│   └── widgets/  
+├── dep_injection.dart  
+└── main.dart  
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+Dependencies:
+connectivity_plus: ^4.0.1
+cupertino_icons: ^1.0.6
+hive: ^2.2.3
+hive_flutter: ^1.1.0
+dio: ^5.4.3+1
+either_dart: ^1.0.0
+Rick and Morty API
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
