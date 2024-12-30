@@ -29,6 +29,109 @@ class _CharactersScreenState extends State<CharactersScreen> {
   }
 
   @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (BuildContext context) => cubit..getAllCharacters(),
+      child: Scaffold(
+        backgroundColor: MyColor.grey,
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(Routes.favoriteCharactersScreen);
+                },
+                icon: const Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: CircleAvatar(
+                      radius: 14,
+                      backgroundColor: Colors.black,
+                      child: Icon(
+                        Icons.star_outline_rounded,
+                        color: MyColor.yellow,
+                      )),
+                ))
+          ],
+          backgroundColor: MyColor.yellow,
+          title: const Text(
+            "Characters",
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
+          ),
+        ),
+        body: Column(
+          children: [
+            BlocBuilder<CharactersCubit, CharactersStates>(
+              builder: (context, state) {
+                return SearchFilterBar(
+                  searchController: cubit.searchController,
+                  onSearchChanged: cubit.addCharacterToSearchedList,
+                  selectedStatus: cubit.filterState.status,
+                  selectedSpecies: cubit.filterState.species,
+                  onStatusTap: () => _showFilterDialog(
+                    context,
+                    'Select Status',
+                    cubit.statusOptions,
+                    (status) => cubit.updateFilters(status: status),
+                  ),
+                  onSpeciesTap: () => _showFilterDialog(
+                    context,
+                    'Select Species',
+                    cubit.speciesOptions,
+                    (species) => cubit.updateFilters(species: species),
+                  ),
+                  onClearFilters: cubit.resetFilters,
+                );
+              },
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: BlocBuilder<CharactersCubit, CharactersStates>(
+                  buildWhen: (previous, current) =>
+                      current is CharactersSuccessState ||
+                      current is CharactersErrorState ||
+                      current is CharactersLoadingState,
+                  builder: (context, state) {
+                    if (state is CharactersLoadingState &&
+                        cubit.characters.isEmpty) {
+                      return const Center(
+                        child: CircularProgressIndicator(color: MyColor.yellow),
+                      );
+                    }
+
+                    if (state is CharactersErrorState &&
+                        cubit.characters.isEmpty) {
+                      return _buildNoInternet(state.errorMessage);
+                    }
+
+                    if (state is CharactersSuccessState) {
+                      return state.characters.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'No characters found',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                            )
+                          : _buildCharacterGrid(state.characters);
+                    }
+
+                    if (cubit.characters.isNotEmpty) {
+                      return _buildCharacterGrid(cubit.characters);
+                    }
+
+                    return const SizedBox();
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
@@ -102,6 +205,17 @@ class _CharactersScreenState extends State<CharactersScreen> {
               borderRadius: BorderRadius.circular(15),
               child: GridTile(
                 footer: GridTileBar(
+                  trailing: IconButton(
+                    icon: Icon(
+                      cubit.favoriteCharacters.contains(character)
+                          ? Icons.star
+                          : Icons.star_border,
+                      color: MyColor.yellow,
+                    ),
+                    onPressed: () {
+                      cubit.toggleFavorite(character!);
+                    },
+                  ),
                   backgroundColor: MyColor.grey.withOpacity(0.7),
                   title: Text(
                     character?.name ?? "",
@@ -185,92 +299,6 @@ class _CharactersScreenState extends State<CharactersScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) => cubit..getAllCharacters(),
-      child: Scaffold(
-        backgroundColor: MyColor.grey,
-        appBar: AppBar(
-          backgroundColor: MyColor.yellow,
-          title: const Text(
-            "Characters",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
-          ),
-        ),
-        body: Column(
-          children: [
-            BlocBuilder<CharactersCubit, CharactersStates>(
-              builder: (context, state) {
-                return SearchFilterBar(
-                  searchController: cubit.searchController,
-                  onSearchChanged: cubit.addCharacterToSearchedList,
-                  selectedStatus: cubit.filterState.status,
-                  selectedSpecies: cubit.filterState.species,
-                  onStatusTap: () => _showFilterDialog(
-                    context,
-                    'Select Status',
-                    cubit.statusOptions,
-                    (status) => cubit.updateFilters(status: status),
-                  ),
-                  onSpeciesTap: () => _showFilterDialog(
-                    context,
-                    'Select Species',
-                    cubit.speciesOptions,
-                    (species) => cubit.updateFilters(species: species),
-                  ),
-                  onClearFilters: cubit.resetFilters,
-                );
-              },
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: BlocBuilder<CharactersCubit, CharactersStates>(
-                  buildWhen: (previous, current) =>
-                      current is CharactersSuccessState ||
-                      current is CharactersErrorState ||
-                      current is CharactersLoadingState,
-                  builder: (context, state) {
-                    if (state is CharactersLoadingState &&
-                        cubit.characters.isEmpty) {
-                      return const Center(
-                        child: CircularProgressIndicator(color: MyColor.yellow),
-                      );
-                    }
-
-                    if (state is CharactersErrorState &&
-                        cubit.characters.isEmpty) {
-                      return _buildNoInternet(state.errorMessage);
-                    }
-
-                    if (state is CharactersSuccessState) {
-                      return state.characters.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'No characters found',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
-                              ),
-                            )
-                          : _buildCharacterGrid(state.characters);
-                    }
-
-                    if (cubit.characters.isNotEmpty) {
-                      return _buildCharacterGrid(cubit.characters);
-                    }
-
-                    return const SizedBox();
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

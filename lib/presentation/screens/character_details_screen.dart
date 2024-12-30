@@ -12,12 +12,37 @@ class CharacterDetailsScreen extends StatefulWidget {
 }
 
 class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: MyColor.grey,
+      body: CustomScrollView(
+        slivers: [
+          buildSliverAppBar(widget.character),
+          buildInfoSection(),
+        ],
+      ),
+    );
+  }
+
   Widget buildSliverAppBar(Character character) {
     return SliverAppBar(
+      leading: IconButton(
+        onPressed: () => Navigator.pop(context),
+        icon: const Material(
+          shape: CircleBorder(),
+          elevation: 1,
+          child: CircleAvatar(
+              backgroundColor: MyColor.yellow,
+              foregroundColor: Colors.black,
+              child: Icon(Icons.arrow_back)),
+        ),
+        color: Colors.black,
+      ),
       expandedHeight: 600,
       pinned: true,
       stretch: true,
-      foregroundColor: Colors.white,
+      // foregroundColor: Colors.black,
       flexibleSpace: FlexibleSpaceBar(
         title: Text(
           character.name ?? "",
@@ -135,19 +160,6 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
               ),
             ),
         ]),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: MyColor.grey,
-      body: CustomScrollView(
-        slivers: [
-          buildSliverAppBar(widget.character),
-          buildInfoSection(),
-        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:rick_morty_bloc/data/models/characters_response.dart';
 import 'package:rick_morty_bloc/data/models/filter_characters.dart';
 import 'package:rick_morty_bloc/data/repository/characters/repository/characters_repo_contract.dart';
@@ -8,10 +9,14 @@ import 'package:rick_morty_bloc/logic/cubit/characters_state.dart';
 class CharactersCubit extends Cubit<CharactersStates> {
   final CharactersRepositoryContract repoContract;
 
-  CharactersCubit({required this.repoContract}) : super(CharactersInitial());
+  CharactersCubit({required this.repoContract}) : super(CharactersInitial()) {
+    loadFavorites();
+  }
 
   List<Character> characters = [];
   List<Character> filteredCharacters = [];
+  List<Character> favoriteCharacters = [];
+
   var searchController = TextEditingController();
 
   int currentPage = 1;
@@ -63,6 +68,25 @@ class CharactersCubit extends Cubit<CharactersStates> {
         }
       },
     );
+  }
+
+  void toggleFavorite(Character character) {
+    final box = Hive.box<Character>('favorites');
+
+    if (favoriteCharacters.contains(character)) {
+      favoriteCharacters.remove(character);
+      box.delete(character.id);
+    } else {
+      favoriteCharacters.add(character);
+      box.put(character.id, character);
+    }
+    emit(CharactersSuccessState(characters: filteredCharacters));
+  }
+
+  void loadFavorites() {
+    final box = Hive.box<Character>('favorites');
+    favoriteCharacters = box.values.toList().cast<Character>();
+    emit(CharactersSuccessState(characters: filteredCharacters));
   }
 
   void applyFilters() {
